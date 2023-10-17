@@ -1,0 +1,10 @@
+version: "3"
+services:
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    ports:
+      - 3316:3306
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
