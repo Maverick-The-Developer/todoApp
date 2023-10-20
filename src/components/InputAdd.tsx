@@ -1,17 +1,15 @@
 'use client'
-import { MouseEvent, useRef, useState } from 'react'
+import { KeyboardEvent, MouseEvent, useRef, useState } from 'react'
 
 type Props = {
   reload: () => void
 }
 
-export default function InputAdd({reload}: Props) {
+export default function InputAdd({ reload }: Props) {
   const [content, setContent] = useState('')
   // const inputRef = useRef<HTMLInputElement>(null)
 
-  async function handleAddButton(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault()
-
+  async function sendContentToAPI() {
     if (content.length < 1) {
       window?.alert('내용을 입력하여야 합니다')
       return
@@ -34,13 +32,28 @@ export default function InputAdd({reload}: Props) {
       if (response.ok) {
         const newTodo = await response.json()
         // 등록 성공
-        // reload all todo list and refresh screen
-        reload()
+        setContent('') // clear current input
+        reload() // reload all todo list and refresh screen
       } else {
         window?.alert('등록에 문제가 발생하였습니다.')
       }
     } catch (err) {
       window?.alert('등록에 문제가 발생하였습니다.')
+    }
+  }
+
+  function handleAddButton(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    sendContentToAPI()
+  }
+
+  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    const keyCode = event.code
+    if (keyCode === 'Enter') {
+      event.preventDefault()
+      if (content.length > 0) {
+        sendContentToAPI()
+      }
     }
   }
 
@@ -52,6 +65,7 @@ export default function InputAdd({reload}: Props) {
         type='text'
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        onKeyDown={handleInputKeyDown}
       ></input>
       <button
         className='border rounded-lg border-gray-500 px-8 py-2 hover:text-white hover:bg-gray-500'
