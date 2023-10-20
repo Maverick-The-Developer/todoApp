@@ -48,8 +48,7 @@ export default function InputAdd({ reload }: Props) {
   }
 
   function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    const keyCode = event.code
-    if (keyCode === 'Enter') {
+    if (event.key === 'Enter') {
       event.preventDefault()
       if (content.length > 0) {
         sendContentToAPI()
